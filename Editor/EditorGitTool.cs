@@ -32,17 +32,19 @@ namespace UnityEditorGitTool.Editor
 
             Debug.Log("GitTools: PreExport() - writing git hash into '" + gitHashFilePath + "'");
 
-            string gitHash = ExecAndReadFirstLine("git rev-parse --short HEAD");
-            if (gitHash == null)
+            string gitDetails = ExecAndReadFirstLine("git rev-parse --short HEAD");
+            if (gitDetails == null)
             {
                 Debug.LogError("GitTools: not git hash found!");
-                gitHash = "unknown";
+                gitDetails = "unknown";
             }
 
-            Debug.Log("GitTools: git hash is '" + gitHash + "'");
+            gitDetails = $"{gitDetails}\n{DateTime.Now:yyyy.MM.dd HH:mm}";
+
+            Debug.Log("GitTools: git hash is '" + gitDetails + "'");
 
             AssetDatabase.DeleteAsset(gitHashFilePath);
-            var text = new TextAsset(gitHash);
+            var text = new TextAsset(gitDetails);
             AssetDatabase.CreateAsset(text, gitHashFilePath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
